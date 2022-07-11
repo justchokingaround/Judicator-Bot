@@ -1,4 +1,4 @@
-from logic import constants
+import logic
 import discord
 from discord.ui import View
 
@@ -18,7 +18,7 @@ def censor_message(msg):
         Censors the message according to given patterns.
     """
     vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U']
-    for pattern in constants.CENSORED:
+    for pattern in logic.CENSORED:
         if pattern in msg.lower():
             rev_data = pattern
             for char in rev_data:
