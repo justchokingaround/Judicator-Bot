@@ -1,0 +1,1 @@
+from protected.secrets import GUILD_ID, OPEN_SOURCE_TOKEN

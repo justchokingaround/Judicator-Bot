@@ -1,3 +1,3 @@
-from logic import judicator
+import logic
 
-judicator.activate()
+logic.activate()

@@ -2,24 +2,23 @@ import discord
 import random
 import platform
 import datetime
-from logic.constants import BLOCKED_CHANNELS, CENSORHIP_STATUS, BOT_COLORS, ACTIVITIES
-from logic.utilities import censor_message, RoleView
-from protected import secrets
+import logic
+import protected
 from types import SimpleNamespace
 from discord.ext import commands
 from discord.commands import Option
 
 
-GUILD_ID = secrets.GUILD_ID
-OPEN_SOURCE_TOKEN = secrets.OPEN_SOURCE_TOKEN
+GUILD_ID = protected.GUILD_ID
+OPEN_SOURCE_TOKEN = protected.OPEN_SOURCE_TOKEN
 
 
 bot = commands.Bot(
     intents=discord.Intents.all(),
     status=discord.Status.streaming,
-    activity=ACTIVITIES['STREAM']
+    activity=logic.ACTIVITIES['STREAM']
 )
-bot.colors = BOT_COLORS
+bot.colors = logic.BOT_COLORS
 bot.color_list = SimpleNamespace(**bot.colors)
 
 
@@ -27,7 +26,7 @@ bot.color_list = SimpleNamespace(**bot.colors)
 async def on_ready():
     channel = await bot.fetch_channel(936376047417569280)
     await channel.purge(limit=1)
-    await channel.send("Will you share your knowledge with others and help all members of this server?", view=RoleView())
+    await channel.send("Will you share your knowledge with others and help all members of this server?", view=logic.RoleView())
     print(
         f"-----\nLogged in as: {bot.user.name} : {bot.user.id}\n-----\nMy current activity:{bot.activity}\n-----")
 
@@ -40,9 +39,9 @@ async def on_message(message: discord.Message):
     if message.author == (bot.user or message.author.bot):
         return
     # Change to true if you want to enable censorship
-    if CENSORHIP_STATUS:
+    if logic.CENSORHIP_STATUS:
         channel = message.channel
-        censored_message = censor_message(message.content)
+        censored_message = logic.censor_message(message.content)
         if message.content != censored_message:
             await message.delete()
             await channel.send(message.author.mention + f" Censored: {censored_message} ")
@@ -118,7 +117,7 @@ async def logout_error(ctx: discord.ApplicationContext, error):
 @bot.slash_command(description="Shows bot information.", guild_ids=[int(GUILD_ID)])
 async def stats(ctx: discord.ApplicationContext):
     """
-        A usefull command that displays bot statistics.
+        A useful command that displays bot statistics.
     """
     embed = discord.Embed(title=f'{bot.user.name} Stats', description='\uFEFF',
                           colour=ctx.author.colour, timestamp=datetime.datetime.utcnow())
@@ -144,7 +143,7 @@ async def post(
         topic: Option(str, "Enter your title")
 ):
     temp = channel.name
-    if temp not in BLOCKED_CHANNELS:
+    if temp not in logic.BLOCKED_CHANNELS:
         embed = discord.Embed(title=topic, description='\uFEFF',
                               colour=ctx.author.colour, timestamp=datetime.datetime.utcnow())
         embed.add_field(name="Information", value=info)
@@ -172,7 +171,7 @@ async def channels(ctx: discord.ApplicationContext):
     embed = discord.Embed(title=f'Available Channels:', description='\uFEFF',
                           colour=ctx.author.colour, timestamp=datetime.datetime.utcnow())
     for channel in guild.channels:
-        if channel.name not in BLOCKED_CHANNELS:
+        if channel.name not in logic.BLOCKED_CHANNELS:
             embed.add_field(name=f"{channel.name}:", value=channel.topic)
     embed.set_footer(text=f"{ctx.author.name}",
                      icon_url=f"{ctx.author.avatar.url}")
@@ -186,7 +185,7 @@ async def attach(
     attachment: discord.Attachment
 ):
     temp = channel.name
-    if temp not in BLOCKED_CHANNELS:
+    if temp not in logic.BLOCKED_CHANNELS:
         guild = bot.get_guild(int(GUILD_ID))
         tmp = await attachment.to_file(use_cached=False, spoiler=False)
         for ch in guild.channels:
@@ -204,7 +203,6 @@ async def attach(
 async def help(ctx: discord.ApplicationContext):
     embed = discord.Embed(title=f'Available Commands:', description='\uFEFF',
                           colour=ctx.author.colour, timestamp=datetime.datetime.utcnow())
-    # For some reason help command is repeated twice in the list.
     skip = 0
     for command in bot.application_commands:
         if command.description != "Shows all available commands.":
