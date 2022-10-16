@@ -4,6 +4,8 @@ import platform
 import datetime
 import logic
 import protected
+import httpx
+import regex
 from types import SimpleNamespace
 from discord.ext import commands
 from discord.commands import Option
@@ -11,7 +13,6 @@ from discord.commands import Option
 
 GUILD_ID = protected.GUILD_ID
 OPEN_SOURCE_TOKEN = protected.OPEN_SOURCE_TOKEN
-
 
 bot = commands.Bot(
     intents=discord.Intents.all(),
@@ -45,6 +46,19 @@ async def on_message(message: discord.Message):
         if message.content != censored_message:
             await message.delete()
             await channel.send(message.author.mention + f" Censored: {censored_message} ")
+    if "https://vm.tiktok.com" in message.content or "https://www.tiktok.com" and "video" in message.content:
+        headers = {'User-Agent': 'Judicator'}
+        response = httpx.get(message.content,
+                             headers=headers, follow_redirects=True, timeout=150)
+        print(response)
+        video_link = regex.findall(
+            r'{"url":"([^"]*)",', response.text)[0].replace(r'\u002F', '/').split('?')[0]
+        if response.is_error:
+            print("Unexpected error!")
+        else:
+            channel = message.channel
+            await message.delete()
+            await channel.send(video_link)
 
 
 @bot.slash_command(description="Ping-Pong game.", guild_ids=[int(GUILD_ID)])

@@ -1,4 +1,5 @@
 _pycache_
+test.py
 secrets.cpython-310.pyc
 .secrets_store.json
 secrets.cpython-39.pyc
@@ -7,3 +8,5 @@ utilities.cpython-310.pyc
 legacy.cpython-310.pyc
 judicator.cpython-310.pyc
 setup_secrets.cpython-310.pyc
+logic/__pycache__/__init__.cpython-310.pyc
+protected/__pycache__/__init__.cpython-310.pyc
