@@ -428,7 +428,9 @@ BLOCKED_CHANNELS = {
     'ARCHIVES', 'Important Information','testing room','moderators',
     'Server Information','announcements','rules', 'shortcuts-second-semester',
     'shortcuts-first-semester', 'holy-crushade',"Artwork & more", "sfw", "nsfw",
-    'la-hw', 'Holy Crushade', 'lecture-materials-webhook', 'music', 'Main Stage'
+    'la-hw', 'Holy Crushade', 'lecture-materials-webhook', 'music', 'Main Stage',
+    'HELP', 'solutions-la','sources-se','sources-ds-fa','sources-la','sources-os',
+    'solutions-os','solutions-dsa','solutions-se'
 }
 
 BOT_COLORS = {
