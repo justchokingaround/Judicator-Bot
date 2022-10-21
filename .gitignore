@@ -1,4 +1,4 @@
-_pycache_
+_pycache_/
 test.py
 secrets.cpython-310.pyc
 .secrets_store.json

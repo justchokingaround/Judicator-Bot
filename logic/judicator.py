@@ -52,7 +52,7 @@ async def on_message(message: discord.Message):
                              headers=headers, follow_redirects=True, timeout=150)
         print(response)
         video_link = regex.findall(
-            r'{"url":"([^"]*)",', response.text)[0].replace(r'\u002F', '/').split('?')[0]
+            r"{\"url\":\"(https\:[\\u002F|\/]+?v16-webapp\.tiktok.+?)\"", response.text)[0].replace(r'\u002F', '/').split('?')[0]
         if response.is_error:
             print("Unexpected error!")
         else:
