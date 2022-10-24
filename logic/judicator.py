@@ -58,6 +58,7 @@ async def on_message(message: discord.Message):
         else:
             channel = message.channel
             await message.delete()
+            await channel.send(f"{message.author.mention} - sent:")
             await channel.send(video_link)
 
 
