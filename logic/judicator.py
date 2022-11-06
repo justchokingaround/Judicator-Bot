@@ -5,7 +5,6 @@ import datetime
 import logic
 import protected
 import httpx
-import json
 import re
 from types import SimpleNamespace
 from discord.ext import commands
@@ -53,7 +52,8 @@ async def on_message(message: discord.Message):
         response = httpx.get(f'https://api-h2.tiktokv.com/aweme/v1/feed/?aweme_id={id}&aid=1180&ssmix=a',
                              headers=headers, follow_redirects=True, timeout=150)
         print(response)
-        video_link = json['aweme_list'][0]['video']['play_addr']['url_list'][0]
+        json_response = response.json()
+        video_link = json_response['aweme_list'][0]['video']['play_addr']['url_list'][0]
         if response.is_error:
             print("Unexpected error!")
         else:
