@@ -5,7 +5,8 @@ import datetime
 import logic
 import protected
 import httpx
-import regex
+import json
+import re
 from types import SimpleNamespace
 from discord.ext import commands
 from discord.commands import Option
@@ -48,11 +49,11 @@ async def on_message(message: discord.Message):
             await channel.send(message.author.mention + f" Censored: {censored_message} ")
     if "https://vm.tiktok.com" in message.content or "https://www.tiktok.com" and "video" in message.content:
         headers = {'User-Agent': 'Judicator'}
-        response = httpx.get(message.content,
+        id = re.search(r'video/(.*?)(\?|$)', message.content).group(1)
+        response = httpx.get(f'https://api-h2.tiktokv.com/aweme/v1/feed/?aweme_id={id}&aid=1180&ssmix=a',
                              headers=headers, follow_redirects=True, timeout=150)
         print(response)
-        video_link = regex.findall(
-            r"{\"url\":\"(https\:[\\u002F|\/]+?v16-webapp\.tiktok.+?)\"", response.text)[0].replace(r'\u002F', '/').split('?')[0]
+        video_link = json['aweme_list'][0]['video']['play_addr']['url_list'][0]
         if response.is_error:
             print("Unexpected error!")
         else:
