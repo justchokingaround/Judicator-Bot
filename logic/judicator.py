@@ -46,7 +46,10 @@ async def on_message(message: discord.Message):
         if message.content != censored_message:
             await message.delete()
             await channel.send(message.author.mention + f" Censored: {censored_message} ")
+    
     if "https://vm.tiktok.com" in message.content or "https://www.tiktok.com" and "video" in message.content:
+        if "https://vm.tiktok.com" in message.content:
+            message.content = httpx.head(message.content).headers["Location"]
         headers = {'User-Agent': 'Judicator'}
         id = re.search(r'video/(.*?)(\?|$)', message.content).group(1)
         response = httpx.get(f'https://api-h2.tiktokv.com/aweme/v1/feed/?aweme_id={id}&aid=1180&ssmix=a',
